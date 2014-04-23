@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@android:color/background_dark"
+                android:orientation="vertical">
+
+
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_single_video"
+            android:text="@string/sample_single_video"
+            android:onClick="onClick"
+            />
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_multiple_videos"
+            android:text="@string/sample_multiple_videos"
+            android:onClick="onClick"
+            />
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_set_cover"
+            android:text="@string/sample_set_cover"
+            android:onClick="onClick"
+            />
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_without_set_cover"
+            android:text="@string/sample_without_set_cover"
+            android:onClick="onClick"
+            />
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_with_something_other"
+            android:text="@string/sample_with_something_other"
+            android:onClick="onClick"
+            />
+</LinearLayout>

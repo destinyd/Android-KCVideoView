@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="empty_message">00:00</string>
+    <string name="cannot_play">视频无法播放</string>
+
+</resources>

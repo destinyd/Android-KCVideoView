@@ -1,0 +1,116 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@android:color/background_dark"
+                android:id="@+id/rl_main"
+        >
+
+    <com.github.destinyd.kcvideoview.view.KCInternalVideoView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/kc_vv"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            >
+    </com.github.destinyd.kcvideoview.view.KCInternalVideoView>
+
+    <ImageView android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:id="@+id/iv_cover"
+            />
+
+    <ImageButton android:id="@+id/ib_big_play"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_centerInParent="true"
+                 android:onClick="onClick"
+                 android:src="@drawable/big_play"
+                 android:background="@android:color/transparent"/>
+
+    <TextView android:id="@+id/tv_message"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_centerInParent="true"
+                 android:text="@string/cannot_play"
+                 android:visibility="gone"
+                 android:textSize="@android:dimen/app_icon_size" android:textColor="@android:color/primary_text_dark"/>
+
+    <RelativeLayout android:layout_width="fill_parent"
+                    android:layout_height="@dimen/controllers_panel_height"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/controllers_background_color"
+                    android:gravity="center_vertical"
+                    android:id="@+id/rl_controllers_panel"
+            >
+        <ImageButton android:id="@+id/ib_play"
+                     android:orientation="horizontal"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_alignParentBottom="true"
+                     android:layout_marginLeft="5dp"
+                     android:layout_marginRight="5dp"
+                     android:onClick="onClick"
+                     android:src="@drawable/icon_play"
+                     android:background="@android:color/transparent"/>
+
+        <ImageButton android:id="@+id/ib_pause"
+                     android:orientation="horizontal"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_alignParentBottom="true"
+                     android:layout_marginLeft="5dp"
+                     android:layout_marginRight="5dp"
+                     android:onClick="onClick"
+                     android:src="@drawable/icon_pause"
+                     android:background="@android:color/transparent"
+                     android:visibility="invisible"
+                />
+
+        <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/panel_controller_height"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/ib_play"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/tv_current_position"
+                android:background="#00000000"
+                android:max="100"
+                />
+        <TextView
+                android:id="@+id/tv_current_position"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/panel_controller_height"
+                android:layout_alignParentBottom="true"
+                android:text="@string/empty_message"
+                android:textColor="#FFF"
+                android:layout_toLeftOf="@+id/ib_volume"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_centerHorizontal="true" android:gravity="center_vertical|center_horizontal"
+                />
+        <ImageButton android:id="@+id/ib_volume"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_alignParentBottom="true"
+                     android:layout_toLeftOf="@+id/ib_fullscreen"
+                     android:layout_marginLeft="5dp"
+                     android:layout_marginRight="5dp"
+                     android:src="@drawable/icon_volume"
+                     android:background="@android:color/transparent"/>
+        <ImageButton android:id="@+id/ib_fullscreen"
+                     android:orientation="horizontal"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_alignParentBottom="true"
+                     android:layout_alignParentRight="true"
+                     android:layout_marginLeft="5dp"
+                     android:layout_marginRight="5dp"
+                     android:onClick="onClick"
+                     android:src="@drawable/icon_fullscreen"
+                     android:background="@android:color/transparent"/>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.github.destinyd.kcvideoview.samples"
+          android:versionCode="10"
+          android:versionName="0.1.0">
+
+    <uses-sdk
+            android:minSdkVersion="8"
+            android:targetSdkVersion="19"/>
+
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <!-- where required -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
+
+    <application
+            android:allowBackup="true"
+            android:icon="@drawable/ic_launcher"
+            android:theme="@style/AppTheme">
+
+        <activity android:name=".SampleSingleVideo"
+                  android:configChanges="orientation|keyboardHidden|screenSize"
+                />
+        <activity android:name=".SampleMultipleVideos"
+                  android:configChanges="orientation|keyboardHidden|screenSize"
+                />
+        <activity android:name=".SampleSetCover"
+                  android:configChanges="orientation|keyboardHidden|screenSize"
+                />
+        <activity android:name=".SampleWithoutSetCover"
+                  android:configChanges="orientation|keyboardHidden|screenSize"
+                />
+        <activity android:name=".SampleWithSomethingOther"
+                  android:configChanges="orientation|keyboardHidden|screenSize"
+                />
+        <!--config changes 必须添加，旋转会导致重绘-->
+        <activity android:name=".SimpleMain">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
