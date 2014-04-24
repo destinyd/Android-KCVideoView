@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:background="@android:color/background_dark"
@@ -29,12 +28,29 @@
                  android:background="@android:color/transparent"/>
 
     <TextView android:id="@+id/tv_message"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_centerInParent="true"
-                 android:text="@string/cannot_play"
-                 android:visibility="gone"
-                 android:textSize="@android:dimen/app_icon_size" android:textColor="@android:color/primary_text_dark"/>
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_centerInParent="true"
+              android:text="@string/cannot_play"
+              android:visibility="gone"
+              android:textSize="@android:dimen/app_icon_size"
+              android:textColor="@android:color/primary_text_dark"/>
+
+    <RelativeLayout android:layout_width="fill_parent"
+                    android:layout_height="@dimen/controllers_panel_height"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/controllers_background_color"
+                    android:gravity="center_vertical"
+                    android:id="@+id/rl_title_panel">
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/tv_title"
+                  android:textColor="@android:color/white"
+                  android:layout_centerVertical="true"
+                  android:gravity="center_vertical"
+                  android:paddingLeft="@dimen/activity_horizontal_margin"
+                  android:text="123123" android:textSize="@dimen/panel_title_height"/>
+    </RelativeLayout>
 
     <RelativeLayout android:layout_width="fill_parent"
                     android:layout_height="@dimen/controllers_panel_height"

@@ -49,7 +49,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     TextView tv_current_position;
     ImageButton ib_big_play, ib_play, ib_volume, ib_fullscreen, ib_pause;
     RelativeLayout rl_controllers_panel, rl_main;
-    TextView tv_message;
+    TextView tv_message, tv_title;
     //
     List<View> views;
 
@@ -86,6 +86,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         iv_cover = (ImageView) findViewById(R.id.iv_cover);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         tv_current_position = (TextView) findViewById(R.id.tv_current_position);
+        tv_title = (TextView) findViewById(R.id.tv_title);
 
         ib_big_play = (ImageButton) findViewById(R.id.ib_big_play);
         ib_play = (ImageButton) findViewById(R.id.ib_play);
@@ -484,6 +485,10 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
             }
         } catch (Exception ex) {
         }
+    }
+
+    public void set_title(String title){
+        tv_title.setText(title);
     }
 }
 
