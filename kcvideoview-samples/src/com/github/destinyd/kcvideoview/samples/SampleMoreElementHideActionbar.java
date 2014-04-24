@@ -6,9 +6,11 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TabHost;
+import com.actionbarsherlock.view.ActionMode;
 import com.github.destinyd.kcvideoview.widget.KCVideoView;
 import com.github.kevinsawicki.http.HttpRequest;
-import roboguice.activity.RoboActivity;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import roboguice.inject.InjectView;
 import roboguice.util.RoboAsyncTask;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import java.util.HashMap;
 
 import static com.github.kevinsawicki.http.HttpRequest.get;
 
-public class SampleWithSomethingOther extends RoboActivity implements KCVideoView.ITimePointListener {
+public class SampleMoreElementHideActionbar extends RoboSherlockActivity implements KCVideoView.ITimePointListener {
 
     /**
      * Called when the activity is first created.
@@ -30,6 +32,10 @@ public class SampleWithSomethingOther extends RoboActivity implements KCVideoVie
 
     String mUrl;
     String mJsonString;
+    ActionMode mMode;
+
+    @InjectView(R.id.myTabHost)
+    TabHost tabHost;
 
 
     @Override
@@ -45,7 +51,6 @@ public class SampleWithSomethingOther extends RoboActivity implements KCVideoVie
     }
 
     private void setTabs() {
-        TabHost tabHost = (TabHost) findViewById(R.id.myTabHost);
         tabHost.setBackgroundResource(android.R.color.background_light);
 
         // 如果不是继承TabActivity，则必须在得到tabHost之后，添加标签之前调用tabHost.setup()

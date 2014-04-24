@@ -32,7 +32,10 @@
         <activity android:name=".SampleWithoutSetCover"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                 />
-        <activity android:name=".SampleWithSomethingOther"
+        <activity android:name=".SampleMoreElement"
+                  android:configChanges="orientation|keyboardHidden|screenSize"
+                />
+        <activity android:name=".SampleMoreElementHideActionbar"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                 />
         <!--config changes 必须添加，旋转会导致重绘-->

@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+import com.actionbarsherlock.app.SherlockActivity;
 import com.github.destinyd.kcvideoview.R;
 import com.github.destinyd.kcvideoview.core.Utilities;
 import com.github.destinyd.kcvideoview.error.UnsupportedLayoutError;
@@ -59,7 +60,8 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     int handlePostDelay = 500;
     ViewGroup.LayoutParams mLayoutParams = null;
     int requestedOrientation;
-    Activity activity;
+    SherlockActivity sherlockActivity = null;
+    Activity activity = null;
 
 
     private final Handler handler = new Handler();
@@ -117,7 +119,14 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
 
         init_volume();
 
+
         activity = (Activity) getContext();
+
+        try {
+            sherlockActivity = (SherlockActivity) getContext();
+        } catch (Exception ex) {
+            Log.d("KCVideoView", "context is not SherlockActivity");
+        }
         requestedOrientation = getRequestedOrientation();
     }
 
@@ -185,19 +194,17 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         @Override
         public void onClick(View view) {
             int id = view.getId();
-            if(id == R.id.ib_big_play || id == R.id.ib_play){
+            if (id == R.id.ib_big_play || id == R.id.ib_play) {
                 play();
-            }
-            else if(id == R.id.ib_pause){
+            } else if (id == R.id.ib_pause) {
                 pause();
-            }
-            else if(id == R.id.ib_fullscreen){
+            } else if (id == R.id.ib_fullscreen) {
                 set_fullwindow();
             }
 //            else if(id == R.id.kc_vv){
 //                set_controllers_visiable(!isControllersShow);
 //            }
-            else if(id == R.id.ib_volume){
+            else if (id == R.id.ib_volume) {
                 toggle_volume();
             }
         }
@@ -423,12 +430,22 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         WindowManager.LayoutParams attrs = activity.getWindow().getAttributes();
         attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
         activity.getWindow().setAttributes(attrs);
+        try {
+            sherlockActivity.getSupportActionBar().hide();
+        } catch (Exception ex) {
+            Log.d("KCVideoView", "context is not SherlockActivity");
+        }
     }
 
     private void showStatusBar() {
         WindowManager.LayoutParams attrs = activity.getWindow().getAttributes();
         attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
         activity.getWindow().setAttributes(attrs);
+        try {
+            sherlockActivity.getSupportActionBar().show();
+        } catch (Exception ex) {
+            Log.d("KCVideoView", "context is not SherlockActivity");
+        }
     }
 
     private int getRequestedOrientation() {
