@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by dd on 14-4-16.
  */
-public class KCInternalVideoView extends VideoView implements MediaPlayer.OnPreparedListener, View.OnClickListener {
+public class KCInternalVideoView extends VideoView implements MediaPlayer.OnPreparedListener {
     List<PlayListObj> mListPlay = null;
     int mHours, mMinutes, mSeconds, mSecondsCount;
     int mSize;
@@ -164,10 +164,5 @@ public class KCInternalVideoView extends VideoView implements MediaPlayer.OnPrep
             return mListPlay.get(part - 2);
         }
         return null;
-    }
-
-    @Override
-    public void onClick(View v) {
-        super.callOnClick();
     }
 }
