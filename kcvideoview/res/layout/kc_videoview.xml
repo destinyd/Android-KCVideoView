@@ -131,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/controllers_background_color"
                     android:gravity="center_vertical"
-                    android:id="@+id/rl_volume"
+                    android:id="@+id/rl_volume_panel"
                     android:layout_below="@+id/rl_title_panel"
                     android:layout_above="@+id/rl_controllers_panel"
                     android:layout_alignParentRight="true"

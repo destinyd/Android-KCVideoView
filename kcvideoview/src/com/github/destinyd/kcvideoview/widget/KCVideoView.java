@@ -22,9 +22,7 @@ import com.github.destinyd.kcvideoview.model.PlayListObj;
 import com.github.kevinsawicki.http.HttpRequest;
 import roboguice.util.RoboAsyncTask;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static com.github.kevinsawicki.http.HttpRequest.get;
 
@@ -44,7 +42,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     SeekBar seekBar;
     TextView tv_current_position;
     ImageButton ib_big_play, ib_play, ib_volume, ib_fullscreen, ib_pause;
-    RelativeLayout rl_controllers_panel, rl_main, rl_volume;
+    RelativeLayout rl_controllers_panel, rl_volume_panel, rl_title_panel, rl_main;
     TextView tv_message, tv_title;
     VerticalSeekBar vsb_volume;
     //
@@ -63,13 +61,14 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     ViewGroup.LayoutParams mLayoutParams = null;
     SherlockActivity sherlockActivity = null;
     Activity activity = null;
+    Date dateLastClick = null;
 
 
-    private final Handler handler = new Handler();
-    private final Runnable r = new Runnable() {
+    private final Handler handlerSeekProgress = new Handler();
+    private final Runnable rSeekProgress = new Runnable() {
         @Override
         public void run() {
-            updateSeekProgress();
+            updateViews();
         }
     };
 
@@ -80,6 +79,8 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     public KCVideoView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.kc_videoview, this, true);
+
+        resetDateLastClick();
 
         views = new ArrayList<View>();
 
@@ -97,12 +98,14 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
 
         vsb_volume = (VerticalSeekBar) findViewById(R.id.vsb_volume);
 
-        rl_controllers_panel = (RelativeLayout) findViewById(R.id.rl_controllers_panel);
         rl_main = (RelativeLayout) findViewById(R.id.rl_main);
-        rl_volume = (RelativeLayout) findViewById(R.id.rl_volume);
+        rl_controllers_panel = (RelativeLayout) findViewById(R.id.rl_controllers_panel);
+        rl_volume_panel = (RelativeLayout) findViewById(R.id.rl_volume_panel);
+        rl_title_panel = (RelativeLayout) findViewById(R.id.rl_title_panel);
         tv_message = (TextView) findViewById(R.id.tv_message);
 
         views.add(rl_controllers_panel);
+        views.add(rl_title_panel);
         views.add(ib_big_play);
 
         kc_vv.setOnCompletionListener(this);
@@ -114,6 +117,8 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         ib_pause.setOnClickListener(onClick);
         ib_volume.setOnClickListener(onClick);
         ib_fullscreen.setOnClickListener(onClick);
+        kc_vv.setOnClickListener(onClick);
+        rl_main.setOnClickListener(onClick);
 
         utils = new Utilities();
 
@@ -135,6 +140,10 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         init_volume();
     }
 
+    private void resetDateLastClick() {
+        dateLastClick = Calendar.getInstance().getTime();
+    }
+
     private void init_volume() {
         AudioManager mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
         int current = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -146,10 +155,16 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     }
 
     private void toggle_rl_volume_to(boolean is_fullscreen) {
-        rl_volume.setVisibility(is_fullscreen ? VISIBLE : GONE);
+        rl_volume_panel.setVisibility(is_fullscreen ? VISIBLE : GONE);
     }
 
-    private void updateSeekProgress() {
+    private void updateViews() {
+        watchProgress();
+        watchControllers();
+        handlerSeekProgress.postDelayed(rSeekProgress, handlePostDelay);
+    }
+
+    private void watchProgress() {
         if (isPlaying) {
             int totalDuration = kc_vv.getDuration();
             int currentPosition = kc_vv.getCurrentPosition();
@@ -159,7 +174,23 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
 
             call_i_time_point_listener(currentPosition, handlePostDelay);
         }
-        handler.postDelayed(r, handlePostDelay);
+    }
+
+
+    private void watchControllers() {
+        if (isPlaying) {
+            if (isControllersShow) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.SECOND, -5);
+                if (dateLastClick.before(cal.getTime())) {
+                    set_controllers_visiable(false);
+                }
+            }
+        } else {
+            if(!isControllersShow)
+                set_controllers_visiable(true);
+            resetDateLastClick();
+        }
     }
 
     private void call_i_time_point_listener(int currentPosition, int handlePostDelay) {
@@ -203,6 +234,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     public OnClickListener onClick = new OnClickListener() {
         @Override
         public void onClick(View view) {
+            resetDateLastClick();
             int id = view.getId();
             if (id == R.id.ib_big_play || id == R.id.ib_play) {
                 play();
@@ -212,11 +244,11 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
                 isFullscreen = !isFullscreen;//改变全屏/窗口的标记
                 set_fullwindow();
             }
-//            else if(id == R.id.kc_vv){
-//                set_controllers_visiable(!isControllersShow);
-//            }
             else if (id == R.id.ib_volume) {
                 toggle_volume();
+            }
+            else if(id == R.id.rl_main){
+                set_controllers_visiable(true);
             }
         }
     };
@@ -337,7 +369,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         isPlaying = true;
         kc_vv.start();
 
-        updateSeekProgress();
+        updateViews();
 //        set_controllers_visiable(false);
     }
 
@@ -411,7 +443,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
                 int totalDuration = kc_vv.getDuration();
                 int p_progress = utils.progressToTimer(progress,
                         totalDuration);
-                kc_vv.pause();
+//                kc_vv.pause();
                 set_current_position(p_progress);
                 kc_vv.seekTo(p_progress);
             }
@@ -425,6 +457,9 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         while (it.hasNext()) {
             View view = it.next();
             view.setVisibility(v);
+        }
+        if (isFullscreen) {
+            rl_volume_panel.setVisibility(v);
         }
     }
 

@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.VideoView;
 import com.github.destinyd.kcvideoview.model.PlayListObj;
 import com.google.gson.Gson;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Created by dd on 14-4-16.
  */
-public class KCInternalVideoView extends VideoView implements MediaPlayer.OnPreparedListener {
+public class KCInternalVideoView extends VideoView implements MediaPlayer.OnPreparedListener, View.OnClickListener {
     List<PlayListObj> mListPlay = null;
     int mHours, mMinutes, mSeconds, mSecondsCount;
     int mSize;
@@ -49,11 +50,15 @@ public class KCInternalVideoView extends VideoView implements MediaPlayer.OnPrep
                     PlayListObj tmp = mListPlay.get(i);
                     PlayListObj tmp_prev = mListPlay.get(i - 1);
                     if (msec < tmp.getSecondsCount() * 1000 && msec >= tmp_prev.getSecondsCount() * 1000) {
-                        play(i + 1, msec - tmp_prev.getSecondsCount() * 1000); // this, 逻辑有问题 还是他本身有问题
+                        setPosition(i + 1, msec - tmp_prev.getSecondsCount() * 1000); // this, 逻辑有问题 还是他本身有问题
+                        if(isPlaying)
+                            start();
                         return;
                     }
                 }
                 setPosition(1, msec);
+                if(isPlaying)
+                    start();
                 return;
             }
         }
@@ -84,7 +89,6 @@ public class KCInternalVideoView extends VideoView implements MediaPlayer.OnPrep
 
     private void play(int i, int seekTo) {
         setPosition(i, seekTo);
-        isPlaying = true;
         start();
     }
 
@@ -160,5 +164,10 @@ public class KCInternalVideoView extends VideoView implements MediaPlayer.OnPrep
             return mListPlay.get(part - 2);
         }
         return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.callOnClick();
     }
 }
