@@ -39,9 +39,6 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
      * recently supplied in onSaveInstanceState(Bundle). <b>Note: Otherwise it is null.</b>
      */
 
-    int mStopPosition = 0;
-    boolean isFullscreen = false;
-
     //views
     KCInternalVideoView kc_vv;
     ImageView iv_cover;
@@ -54,13 +51,17 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     //
     List<View> views;
 
+    //    int mStopPosition = 0;
+    int handlePostDelay = 500;
+    int requestedOrientation;
+
+    boolean isFullscreen = false;
     boolean isControllersShow = true;
+    boolean isPlaying = false;
     private Utilities utils;
     String mCoverUrl;
     Drawable mCover;
-    int handlePostDelay = 500;
     ViewGroup.LayoutParams mLayoutParams = null;
-    int requestedOrientation;
     SherlockActivity sherlockActivity = null;
     Activity activity = null;
 
@@ -150,7 +151,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     }
 
     private void updateSeekProgress() {
-        if (kc_vv.isPlaying()) {
+        if (isPlaying) {
             int totalDuration = kc_vv.getDuration();
             int currentPosition = kc_vv.getCurrentPosition();
             set_current_position(currentPosition);
@@ -255,7 +256,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
 
         if (is_fullscreen) {
             tv_current_position.setVisibility(VISIBLE);
-            if (kc_vv.isPlaying()) {
+            if (isPlaying) {
                 ib_play.setVisibility(INVISIBLE);
                 ib_pause.setVisibility(VISIBLE);
             } else {
@@ -333,37 +334,46 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     }
 
     public void play() {
-        iv_cover.setVisibility(View.GONE);
-        tv_message.setVisibility(View.GONE);
-        if(isFullscreen){
-            ib_play.setVisibility(INVISIBLE);
-            ib_pause.setVisibility(VISIBLE);
-        }
-        else{
-            ib_play.setVisibility(GONE);
-            ib_pause.setVisibility(GONE);
-        }
+        change_view_to_play();
+        isPlaying = true;
         kc_vv.start();
 
         updateSeekProgress();
-        ib_big_play.setVisibility(GONE);
 //        set_controllers_visiable(false);
     }
 
-    public void pause() {
-        if (kc_vv.canPause()) {
-            if(isFullscreen){
-                ib_play.setVisibility(VISIBLE);
-                ib_pause.setVisibility(INVISIBLE);
-            }
-            else{
-                ib_play.setVisibility(GONE);
-                ib_pause.setVisibility(GONE);
-            }
-            mStopPosition = kc_vv.getCurrentPosition();
-            kc_vv.pause();
-            set_controllers_visiable(true);
+    private void change_view_to_play() {
+        iv_cover.setVisibility(View.GONE);
+        tv_message.setVisibility(View.GONE);
+        if (isFullscreen) {
+            ib_play.setVisibility(INVISIBLE);
+            ib_pause.setVisibility(VISIBLE);
+        } else {
+            ib_play.setVisibility(GONE);
+            ib_pause.setVisibility(GONE);
         }
+        ib_big_play.setVisibility(GONE);
+    }
+
+    public void pause() {
+//        if (kc_vv.canPause()) {
+        if (isPlaying) {
+            change_view_to_pause();
+            kc_vv.pause();
+            isPlaying = false;
+        }
+    }
+
+    private void change_view_to_pause() {
+        if (isFullscreen) {
+            ib_play.setVisibility(VISIBLE);
+            ib_pause.setVisibility(INVISIBLE);
+        } else {
+            ib_play.setVisibility(GONE);
+            ib_pause.setVisibility(GONE);
+        }
+//            mStopPosition = kc_vv.getCurrentPosition();
+        set_controllers_visiable(true);
     }
 
     public void set_cover(String img_url) {
@@ -446,7 +456,13 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         if (kc_vv.couldPlayNext()) {
-            kc_vv.playNext();
+            if (isPlaying) {
+                kc_vv.playNext();
+            }
+        } else {
+            isPlaying = false;
+            change_view_to_pause();
+            seekBar.setProgress(0);
         }
     }
 
