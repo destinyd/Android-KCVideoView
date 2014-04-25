@@ -43,7 +43,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     TextView tv_current_position;
     ImageButton ib_big_play, ib_play, ib_volume, ib_fullscreen, ib_pause;
     RelativeLayout rl_controllers_panel, rl_volume_panel, rl_title_panel, rl_main;
-    TextView tv_message, tv_title;
+    TextView tv_message, tv_title, tv_buffing;
     VerticalSeekBar vsb_volume;
     //
     List<View> views;
@@ -62,6 +62,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     SherlockActivity sherlockActivity = null;
     Activity activity = null;
     Date dateLastClick = null;
+    int old_duration = 0;
 
 
     private final Handler handlerSeekProgress = new Handler();
@@ -89,6 +90,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         tv_current_position = (TextView) findViewById(R.id.tv_current_position);
         tv_title = (TextView) findViewById(R.id.tv_title);
+        tv_buffing = (TextView) findViewById(R.id.tv_buffing);
 
         ib_big_play = (ImageButton) findViewById(R.id.ib_big_play);
         ib_play = (ImageButton) findViewById(R.id.ib_play);
@@ -161,7 +163,19 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     private void updateViews() {
         watchProgress();
         watchControllers();
+        watchBuffing();
         handlerSeekProgress.postDelayed(rSeekProgress, handlePostDelay);
+    }
+
+    private void watchBuffing() {
+        int duration = kc_vv.getCurrentPosition();
+        if (old_duration == duration && isPlaying) {
+            change_buffing_layout_params();
+            tv_buffing.setVisibility(View.VISIBLE);
+        } else {
+            tv_buffing.setVisibility(View.GONE);
+        }
+        old_duration = duration;
     }
 
     private void watchProgress() {
@@ -187,10 +201,16 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
                 }
             }
         } else {
-            if(!isControllersShow)
+            if (!isControllersShow)
                 set_controllers_visiable(true);
-            resetDateLastClick();
         }
+    }
+
+    private void change_buffing_layout_params() {
+        LayoutParams buffingParams = (LayoutParams) tv_buffing.getLayoutParams();
+        buffingParams.addRule(RelativeLayout.ABOVE, isControllersShow ? R.id.rl_controllers_panel : 0);
+        buffingParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, isControllersShow ? 0 : RelativeLayout.TRUE);
+        tv_buffing.setLayoutParams(buffingParams);
     }
 
     private void call_i_time_point_listener(int currentPosition, int handlePostDelay) {
@@ -243,11 +263,9 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
             } else if (id == R.id.ib_fullscreen) {
                 isFullscreen = !isFullscreen;//改变全屏/窗口的标记
                 set_fullwindow();
-            }
-            else if (id == R.id.ib_volume) {
+            } else if (id == R.id.ib_volume) {
                 toggle_volume();
-            }
-            else if(id == R.id.rl_main){
+            } else if (id == R.id.rl_main) {
                 set_controllers_visiable(true);
             }
         }
@@ -279,9 +297,6 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     private void change_fullscreen_view_to(boolean is_fullscreen) {
         LayoutParams seekbarParams = (LayoutParams) seekBar.getLayoutParams();
         seekbarParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, is_fullscreen ? 0 : RelativeLayout.TRUE);
-//        seekBar.setLayoutParams(seekbarParams);
-
-//        LayoutParams positionParams = (LayoutParams) tv_current_position.getLayoutParams();
         seekbarParams.addRule(RelativeLayout.LEFT_OF, is_fullscreen ? R.id.tv_current_position : R.id.ib_fullscreen);
         seekBar.setLayoutParams(seekbarParams);
 

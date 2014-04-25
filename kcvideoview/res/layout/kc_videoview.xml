@@ -51,6 +51,18 @@
                   android:paddingLeft="@dimen/activity_horizontal_margin"
                   android:text="" android:textSize="@dimen/panel_title_height"/>
     </RelativeLayout>
+    
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/tv_buffing"
+              android:text="@string/kcvv_buffing"
+              android:layout_above="@+id/rl_controllers_panel"
+              android:layout_centerHorizontal="true"
+              android:layout_alignParentBottom="true"
+              android:visibility="gone"
+              android:textSize="@dimen/kcvv_message"
+              android:textColor="@android:color/primary_text_dark"
+              android:gravity="bottom"/>
 
     <RelativeLayout android:layout_width="fill_parent"
                     android:layout_height="@dimen/controllers_panel_height"

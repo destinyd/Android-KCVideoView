@@ -3,5 +3,6 @@
 
     <string name="empty_message">00:00</string>
     <string name="cannot_play">视频无法播放</string>
+    <string name="kcvv_buffing">正在缓冲，请稍侯...</string>
 
 </resources>
