@@ -19,7 +19,6 @@ import com.github.destinyd.kcvideoview.R;
 import com.github.destinyd.kcvideoview.core.Utilities;
 import com.github.destinyd.kcvideoview.error.UnsupportedLayoutError;
 import com.github.destinyd.kcvideoview.model.PlayListObj;
-import com.github.destinyd.kcvideoview.view.KCInternalVideoView;
 import com.github.kevinsawicki.http.HttpRequest;
 import roboguice.util.RoboAsyncTask;
 
@@ -142,7 +141,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         int max = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         vsb_volume.setProgress(current);
         vsb_volume.setMax(max);
-        toggle_volume();
+        ib_volume.setImageResource(current > 0 ? R.drawable.icon_volume : R.drawable.icon_volume_disabled);
         toggle_rl_volume_to(isFullscreen);
     }
 
