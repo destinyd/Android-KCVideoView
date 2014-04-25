@@ -5,14 +5,14 @@
                 android:id="@+id/rl_main"
         >
 
-    <com.github.destinyd.kcvideoview.view.KCInternalVideoView
+    <com.github.destinyd.kcvideoview.widget.KCInternalVideoView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/kc_vv"
             android:layout_centerInParent="true"
             android:clickable="true"
             >
-    </com.github.destinyd.kcvideoview.view.KCInternalVideoView>
+    </com.github.destinyd.kcvideoview.widget.KCInternalVideoView>
 
     <ImageView android:layout_width="match_parent"
                android:layout_height="match_parent"

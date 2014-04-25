@@ -1,4 +1,4 @@
-package com.github.destinyd.kcvideoview.view;
+package com.github.destinyd.kcvideoview.widget;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -53,7 +53,7 @@ public class KCInternalVideoView extends VideoView implements MediaPlayer.OnPrep
                         return;
                     }
                 }
-                play(1, msec);
+                setPosition(1, msec);
                 return;
             }
         }
