@@ -8,7 +8,7 @@ import roboguice.util.RoboAsyncTask;
 
 import static com.github.kevinsawicki.http.HttpRequest.get;
 
-public class SampleWithoutSetCover extends RoboActivity {
+public class SampleSetTitle extends RoboActivity {
 
     /**
      * Called when the activity is first created.
@@ -31,6 +31,7 @@ public class SampleWithoutSetCover extends RoboActivity {
         kcvv = (KCVideoView) findViewById(R.id.kcvv);
 
         getJson("http://www.mocky.io/v2/535624c1196824b710c6b9ca");
+        kcvv.set_title("视频教程");
     }
 
     private void getJson(String url) {

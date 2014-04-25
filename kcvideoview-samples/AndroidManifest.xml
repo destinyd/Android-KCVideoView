@@ -29,7 +29,7 @@
         <activity android:name=".SampleSetCover"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                 />
-        <activity android:name=".SampleWithoutSetCover"
+        <activity android:name=".SampleSetTitle"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                 />
         <activity android:name=".SampleMoreElement"

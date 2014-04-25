@@ -27,7 +27,7 @@ public class SimpleMain extends Activity {
                 startActivity(new Intent(this, SampleSetCover.class));
                 break;
             case R.id.btn_without_set_cover:
-                startActivity(new Intent(this, SampleWithoutSetCover.class));
+                startActivity(new Intent(this, SampleSetTitle.class));
                 break;
             case R.id.btn_more_element:
                 startActivity(new Intent(this, SampleMoreElement.class));

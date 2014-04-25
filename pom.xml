@@ -14,7 +14,7 @@
     <groupId>com.github.destinyd</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
 
     <name>KCVideoView(Parent)</name>
     <description>An android library of more powerful video view for android, with play,pause, volume ,full screen image buttons and functions.</description>

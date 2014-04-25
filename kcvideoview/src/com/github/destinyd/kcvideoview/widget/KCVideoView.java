@@ -48,8 +48,9 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     SeekBar seekBar;
     TextView tv_current_position;
     ImageButton ib_big_play, ib_play, ib_volume, ib_fullscreen, ib_pause;
-    RelativeLayout rl_controllers_panel, rl_main;
+    RelativeLayout rl_controllers_panel, rl_main, rl_volume;
     TextView tv_message, tv_title;
+    VerticalSeekBar vsb_volume;
     //
     List<View> views;
 
@@ -94,8 +95,11 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         ib_volume = (ImageButton) findViewById(R.id.ib_volume);
         ib_fullscreen = (ImageButton) findViewById(R.id.ib_fullscreen);
 
+        vsb_volume = (VerticalSeekBar) findViewById(R.id.vsb_volume);
+
         rl_controllers_panel = (RelativeLayout) findViewById(R.id.rl_controllers_panel);
         rl_main = (RelativeLayout) findViewById(R.id.rl_main);
+        rl_volume = (RelativeLayout) findViewById(R.id.rl_volume);
         tv_message = (TextView) findViewById(R.id.tv_message);
 
         views.add(rl_controllers_panel);
@@ -114,12 +118,10 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         utils = new Utilities();
 
 //        seekBar.setMax(100);
-        seekBar.setOnSeekBarChangeListener(change);
+        seekBar.setOnSeekBarChangeListener(current_position_change);
+        vsb_volume.setOnSeekBarChangeListener(volume_change);
 
         listITimePointListener = new ArrayList<CTimePoint>();
-
-        init_volume();
-
 
         activity = (Activity) getContext();
 
@@ -129,15 +131,22 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
             Log.d("KCVideoView", "context is not SherlockActivity");
         }
         requestedOrientation = getRequestedOrientation();
+
+        init_volume();
     }
 
     private void init_volume() {
         AudioManager mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
         int current = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        if (current == 0)
-            ib_volume.setImageResource(R.drawable.icon_volume_disabled);
-        else
-            ib_volume.setImageResource(R.drawable.icon_volume);
+        int max = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        vsb_volume.setProgress(current);
+        vsb_volume.setMax(max);
+        toggle_volume();
+        toggle_rl_volume_to(isFullscreen);
+    }
+
+    private void toggle_rl_volume_to(boolean is_fullscreen) {
+        rl_volume.setVisibility(is_fullscreen ? VISIBLE : GONE);
     }
 
     private void updateSeekProgress() {
@@ -200,6 +209,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
             } else if (id == R.id.ib_pause) {
                 pause();
             } else if (id == R.id.ib_fullscreen) {
+                isFullscreen = !isFullscreen;//改变全屏/窗口的标记
                 set_fullwindow();
             }
 //            else if(id == R.id.kc_vv){
@@ -215,56 +225,95 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         if (this.mLayoutParams == null)
             this.mLayoutParams = //(RelativeLayout.LayoutParams)  //对于父级的LayoutParams
                     getLayoutParams();
-        ViewGroup.LayoutParams viewGrouplayoutParams = getLayoutParams();
-        if (!isFullscreen) {//设置RelativeLayout的全屏模式
+        if (isFullscreen) {//设置RelativeLayout的全屏模式
             if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                 activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//横屏
             }
             hideStatusBar();
-            String className = viewGrouplayoutParams.getClass().getName();
-            if ("android.widget.RelativeLayout$LayoutParams".equals(className)) {
-                RelativeLayout.LayoutParams layoutParams =
-                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                setLayoutParams(layoutParams);
-            } else if ("android.widget.LinearLayout$LayoutParams".equals(className)) {
-                LinearLayout.LayoutParams layoutParams =
-                        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-                setLayoutParams(layoutParams);
-            } else if ("android.widget.FrameLayout$LayoutParams".equals(className)) {
-                FrameLayout.LayoutParams layoutParams =
-                        new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT);
-                setLayoutParams(layoutParams);
-            } else {
-//                ViewGroup.LayoutParams layoutParams =
-//                        new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
-//                setLayoutParams(layoutParams);
-                throw new UnsupportedLayoutError(viewGrouplayoutParams.getClass().getName());
-            }
-            ViewParent viewParent = getParent();
-//            Class<?> c = viewParent.getClass();
-            ViewGroup viewGroup = ((ViewGroup) viewParent);
-            for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                View view = viewGroup.getChildAt(i);
-                if (view != this)
-                    view.setVisibility(INVISIBLE);
-            }
+            set_fullscreen_layout_params();
+            hide_parent_other_views();
+            change_fullscreen_view_to(isFullscreen);
 
         } else {//设置RelativeLayout的窗口模式
             activity.setRequestedOrientation(requestedOrientation); // 恢复
             showStatusBar();
             setLayoutParams(mLayoutParams);
-            ViewGroup viewGroup = ((ViewGroup) getParent());
-            for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                View view = viewGroup.getChildAt(i);
-                if (view != this)
-                    view.setVisibility(VISIBLE);
-            }
+            resume_parent_other_views();
+            change_fullscreen_view_to(isFullscreen);
         }
-        isFullscreen = !isFullscreen;//改变全屏/窗口的标记
+        toggle_rl_volume_to(isFullscreen);
+    }
+
+    private void change_fullscreen_view_to(boolean is_fullscreen) {
+        LayoutParams seekbarParams = (LayoutParams) seekBar.getLayoutParams();
+        seekbarParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, is_fullscreen ? 0 : RelativeLayout.TRUE);
+//        seekBar.setLayoutParams(seekbarParams);
+
+//        LayoutParams positionParams = (LayoutParams) tv_current_position.getLayoutParams();
+        seekbarParams.addRule(RelativeLayout.LEFT_OF, is_fullscreen ? R.id.tv_current_position : R.id.ib_fullscreen);
+        seekBar.setLayoutParams(seekbarParams);
+
+        if (is_fullscreen) {
+            tv_current_position.setVisibility(VISIBLE);
+            if (kc_vv.isPlaying()) {
+                ib_play.setVisibility(INVISIBLE);
+                ib_pause.setVisibility(VISIBLE);
+            } else {
+                ib_play.setVisibility(VISIBLE);
+                ib_pause.setVisibility(INVISIBLE);
+            }
+        } else {
+            ib_play.setVisibility(GONE);
+            ib_pause.setVisibility(GONE);
+            tv_current_position.setVisibility(GONE);
+        }
+    }
+
+    private void resume_parent_other_views() {
+        ViewGroup viewGroup = ((ViewGroup) getParent());
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View view = viewGroup.getChildAt(i);
+            if (view != this)
+                view.setVisibility(VISIBLE);
+        }
+    }
+
+    private void set_fullscreen_layout_params() {
+        ViewGroup.LayoutParams viewGrouplayoutParams = getLayoutParams();
+        String className = viewGrouplayoutParams.getClass().getName();
+        if ("android.widget.RelativeLayout$LayoutParams".equals(className)) {
+            LayoutParams layoutParams =
+                    new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            setLayoutParams(layoutParams);
+        } else if ("android.widget.LinearLayout$LayoutParams".equals(className)) {
+            LinearLayout.LayoutParams layoutParams =
+                    new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+            setLayoutParams(layoutParams);
+        } else if ("android.widget.FrameLayout$LayoutParams".equals(className)) {
+            FrameLayout.LayoutParams layoutParams =
+                    new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT);
+            setLayoutParams(layoutParams);
+        } else {
+//                ViewGroup.LayoutParams layoutParams =
+//                        new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
+//                setLayoutParams(layoutParams);
+            throw new UnsupportedLayoutError(viewGrouplayoutParams.getClass().getName());
+        }
+    }
+
+    private void hide_parent_other_views() {
+        ViewParent viewParent = getParent();
+//            Class<?> c = viewParent.getClass();
+        ViewGroup viewGroup = ((ViewGroup) viewParent);
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View view = viewGroup.getChildAt(i);
+            if (view != this)
+                view.setVisibility(INVISIBLE);
+        }
     }
 
     private void toggle_volume() {
@@ -272,11 +321,13 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         int max = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         int current = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         if (current <= 0) {
-            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, max, AudioManager.FLAG_SHOW_UI);
+            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, max, AudioManager.MODE_NORMAL);
             ib_volume.setImageResource(R.drawable.icon_volume);
+            vsb_volume.setProgress(max);
         } else {
-            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_SHOW_UI);
+            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.MODE_NORMAL);
             ib_volume.setImageResource(R.drawable.icon_volume_disabled);
+            vsb_volume.setProgress(0);
         }
 
     }
@@ -284,8 +335,14 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     public void play() {
         iv_cover.setVisibility(View.GONE);
         tv_message.setVisibility(View.GONE);
-        ib_play.setVisibility(INVISIBLE);
-        ib_pause.setVisibility(VISIBLE);
+        if(isFullscreen){
+            ib_play.setVisibility(INVISIBLE);
+            ib_pause.setVisibility(VISIBLE);
+        }
+        else{
+            ib_play.setVisibility(GONE);
+            ib_pause.setVisibility(GONE);
+        }
         kc_vv.start();
 
         updateSeekProgress();
@@ -295,8 +352,14 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
 
     public void pause() {
         if (kc_vv.canPause()) {
-            ib_play.setVisibility(VISIBLE);
-            ib_pause.setVisibility(INVISIBLE);
+            if(isFullscreen){
+                ib_play.setVisibility(VISIBLE);
+                ib_pause.setVisibility(INVISIBLE);
+            }
+            else{
+                ib_play.setVisibility(GONE);
+                ib_pause.setVisibility(GONE);
+            }
             mStopPosition = kc_vv.getCurrentPosition();
             kc_vv.pause();
             set_controllers_visiable(true);
@@ -315,7 +378,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         kc_vv.load(json_string);
     }
 
-    private SeekBar.OnSeekBarChangeListener change = new SeekBar.OnSeekBarChangeListener() {
+    private SeekBar.OnSeekBarChangeListener current_position_change = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             // 当进度条停止修改的时候触发
@@ -487,8 +550,27 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         }
     }
 
-    public void set_title(String title){
+    public void set_title(String title) {
         tv_title.setText(title);
     }
+
+
+    private VerticalSeekBar.OnSeekBarChangeListener volume_change = new VerticalSeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(VerticalSeekBar VerticalSeekBar, int progress, boolean fromUser) {
+
+        }
+
+        @Override
+        public void onStartTrackingTouch(VerticalSeekBar VerticalSeekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(VerticalSeekBar VerticalSeekBar) {
+            AudioManager mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, VerticalSeekBar.getProgress(), AudioManager.MODE_NORMAL);
+        }
+    };
 }
 

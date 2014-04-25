@@ -4,7 +4,7 @@
     <string name="sample_single_video">播放单段文件视频（一个视频里只包含单文件）</string>
     <string name="sample_multiple_videos">播放多段文件视频（一个视频里包含多个文件）</string>
     <string name="sample_set_cover">初始化时设置了自定义封面的视频播放组件</string>
-    <string name="sample_without_set_cover">初始化时没有设置自定义封面的视频播放组件</string>
+    <string name="sample_with_title">自定义视频标题</string>
     <string name="sample_more_element">多元素混排</string>
     <string name="sample_more_element_hide_actionbar">多元素混排（全屏能隐藏Actionbar）</string>
 
