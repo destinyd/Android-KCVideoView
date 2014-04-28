@@ -644,5 +644,13 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
             mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, VerticalSeekBar.getProgress(), AudioManager.MODE_NORMAL);
         }
     };
+
+    public int getCurrentPosition(){
+        return kc_vv.getCurrentPosition();
+    }
+
+    public void seekTo(int msec){
+        kc_vv.seekTo(msec);
+    }
 }
 
