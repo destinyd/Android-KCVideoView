@@ -41,7 +41,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     ImageView iv_cover;
     SeekBar seekBar;
     TextView tv_current_position;
-    ImageButton ib_big_play, ib_play, ib_volume, ib_fullscreen, ib_pause;
+    ImageButton ib_big, ib_play, ib_volume, ib_fullscreen, ib_pause;
     RelativeLayout rl_controllers_panel, rl_volume_panel, rl_title_panel, rl_main;
     TextView tv_message, tv_title, tv_buffing;
     VerticalSeekBar vsb_volume;
@@ -92,7 +92,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         tv_title = (TextView) findViewById(R.id.tv_title);
         tv_buffing = (TextView) findViewById(R.id.tv_buffing);
 
-        ib_big_play = (ImageButton) findViewById(R.id.ib_big_play);
+        ib_big = (ImageButton) findViewById(R.id.ib_big);
         ib_play = (ImageButton) findViewById(R.id.ib_play);
         ib_pause = (ImageButton) findViewById(R.id.ib_pause);
         ib_volume = (ImageButton) findViewById(R.id.ib_volume);
@@ -108,13 +108,13 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
 
         views.add(rl_controllers_panel);
         views.add(rl_title_panel);
-        views.add(ib_big_play);
+        views.add(ib_big);
 
         kc_vv.setOnCompletionListener(this);
         kc_vv.setOnErrorListener(this);
 
 
-        ib_big_play.setOnClickListener(onClick);
+        ib_big.setOnClickListener(onClick);
         ib_play.setOnClickListener(onClick);
         ib_pause.setOnClickListener(onClick);
         ib_volume.setOnClickListener(onClick);
@@ -256,7 +256,14 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         public void onClick(View view) {
             resetDateLastClick();
             int id = view.getId();
-            if (id == R.id.ib_big_play || id == R.id.ib_play) {
+            if (id == R.id.ib_big)
+            {
+                if(isPlaying)
+                    pause();
+                else
+                    play();
+            }
+            else if(id == R.id.ib_play) {
                 play();
             } else if (id == R.id.ib_pause) {
                 pause();
@@ -398,7 +405,8 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
             ib_play.setVisibility(GONE);
             ib_pause.setVisibility(GONE);
         }
-        ib_big_play.setVisibility(GONE);
+        ib_big.setImageResource(R.drawable.big_pause);
+//        ib_big.setVisibility(GONE);
     }
 
     public void pause() {
@@ -419,6 +427,7 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
             ib_pause.setVisibility(GONE);
         }
 //            mStopPosition = kc_vv.getCurrentPosition();
+        ib_big.setImageResource(R.drawable.big_play);
         set_controllers_visiable(true);
     }
 
