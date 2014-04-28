@@ -27,6 +27,22 @@ kcvideoview-samples 为演示例子
   <artifactId>gson</artifactId>
   <version>2.2.4</version>
 </dependency>
+<!--sherlock actionbar 才能动态隐藏标题栏-->
+<dependency>
+    <groupId>com.actionbarsherlock</groupId>
+    <artifactId>actionbarsherlock</artifactId>
+    <version>4.4.0</version>
+    <type>apklib</type>
+</dependency>
+```
+###可选依赖项
+```
+<!--roboguice 和 sherlock的结合，apklib未使用,sample里面使用了-->
+<dependency>
+    <groupId>com.github.rtyley</groupId>
+    <artifactId>roboguice-sherlock</artifactId>
+    <version>1.5</version>
+</dependency>
 ```
 
 ###组件需要的权限：
@@ -45,7 +61,7 @@ kcvideoview-samples 为演示例子
 <dependency>
   <groupId>com.github.destinyd</groupId>
   <artifactId>kcvideoview</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.5</version>
   <type>apklib</type>
 </dependency>
 ```
@@ -58,6 +74,15 @@ android:configChanges="orientation|keyboardHidden|screenSize"
 否则屏幕旋转会导致重绘，且全屏按钮使用会不正常
 
 ****
-由于去除title需要在setContentView之前执行，所以在全屏功能中不能去除，如有需要请自行设定。
-
 全屏时速度有些慢，在想办法解决。
+
+###回到Activity，恢复之前播放状态
+需要自行改写onPause（通过getCurrentPosition获取当前播放点） onRestart(通过seekTo 设置当前播放点)来实现
+
+###bug fix
+####bug 1修复
+####for Bug2
+由于去除title需要在setContentView之前执行
+如果需要请在onCreate中setContentView之前，加入：
+requestWindowFeature(Window.FEATURE_NO_TITLE);
+或者直接使用SherlockActivity

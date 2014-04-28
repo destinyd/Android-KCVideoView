@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.destinyd</groupId>
         <artifactId>parent</artifactId>
-        <version>0.1.1</version>
+        <version>0.1.5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -46,11 +46,6 @@
             <artifactId>actionbarsherlock</artifactId>
             <version>${abs.version}</version>
             <type>apklib</type>
-        </dependency>
-        <dependency>
-            <groupId>com.github.rtyley</groupId>
-            <artifactId>roboguice-sherlock</artifactId>
-            <version>${roboguice-sherlock.version}</version>
         </dependency>
     </dependencies>
 
