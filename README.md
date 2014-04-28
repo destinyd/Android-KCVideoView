@@ -1,10 +1,11 @@
-android-video-view
+Android-KCVideoView
 ==================
 本项目主要是建立一个独立视屏播放组件KCVideoView
 
 本项目使用Intellij IDEA 13.02开发， 为maven项目，其他开发软件未导入实测
 
 kcvideoview 为 apklib
+
 kcvideoview-samples 为演示例子
 
 ###依赖项以及功能如下：
@@ -35,6 +36,7 @@ kcvideoview-samples 为演示例子
     <type>apklib</type>
 </dependency>
 ```
+
 ###可选依赖项
 ```
 <!--roboguice 和 sherlock的结合，apklib未使用,sample里面使用了-->
@@ -80,7 +82,9 @@ android:configChanges="orientation|keyboardHidden|screenSize"
 需要自行改写onPause（通过getCurrentPosition获取当前播放点） onRestart(通过seekTo 设置当前播放点)来实现
 
 ###bug fix
+
 ####bug 1修复
+
 ####for Bug2
 由于去除title需要在setContentView之前执行
 如果需要请在onCreate中setContentView之前，加入：
