@@ -170,12 +170,12 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     private void watchBuffing() {
         int duration = kc_vv.getCurrentPosition();
         if (old_duration == duration && isPlaying) {
-            change_buffing_layout_params();
-            tv_buffing.setVisibility(View.VISIBLE);
+                change_buffing_layout_params();
+                tv_buffing.setVisibility(View.VISIBLE);
         } else {
             tv_buffing.setVisibility(View.GONE);
+            old_duration = duration;
         }
-        old_duration = duration;
     }
 
     private void watchProgress() {
@@ -256,14 +256,12 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
         public void onClick(View view) {
             resetDateLastClick();
             int id = view.getId();
-            if (id == R.id.ib_big)
-            {
-                if(isPlaying)
+            if (id == R.id.ib_big) {
+                if (isPlaying)
                     pause();
                 else
                     play();
-            }
-            else if(id == R.id.ib_play) {
+            } else if (id == R.id.ib_play) {
                 play();
             } else if (id == R.id.ib_pause) {
                 pause();
