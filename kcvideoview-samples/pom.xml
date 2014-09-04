@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.github.destinyd</groupId>
         <artifactId>kcvideoview-parent</artifactId>
-        <version>0.1.5</version>
+        <version>0.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
