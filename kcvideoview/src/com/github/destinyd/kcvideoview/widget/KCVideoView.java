@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -439,6 +440,10 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
 
     public void load(String json_string) {
         kc_vv.load(json_string);
+    }
+
+    public void load_url(String url) {
+        kc_vv.setVideoURI(Uri.parse(url));
     }
 
     private SeekBar.OnSeekBarChangeListener current_position_change = new SeekBar.OnSeekBarChangeListener() {

@@ -38,6 +38,9 @@
         <activity android:name=".SampleMoreElementHideActionbar"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                 />
+        <activity android:name=".SampleLoadUrl"
+                  android:configChanges="orientation|keyboardHidden|screenSize"
+                />
         <!--config changes 必须添加，旋转会导致重绘-->
         <activity android:name=".SimpleMain">
             <intent-filter>

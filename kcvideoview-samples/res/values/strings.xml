@@ -7,5 +7,6 @@
     <string name="sample_with_title">自定义视频标题</string>
     <string name="sample_more_element">多元素混排</string>
     <string name="sample_more_element_hide_actionbar">多元素混排（全屏能隐藏Actionbar）</string>
+    <string name="sample_load_url">load_url(String url)</string>
 
 </resources>

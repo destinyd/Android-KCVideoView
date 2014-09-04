@@ -35,6 +35,9 @@ public class SimpleMain extends Activity {
             case R.id.btn_more_element_hide_actionbar:
                 startActivity(new Intent(this, SampleMoreElementHideActionbar.class));
                 break;
+            case R.id.btn_load_url:
+                startActivity(new Intent(this, SampleLoadUrl.class));
+                break;
         }
     }
 }

@@ -48,4 +48,11 @@
             android:text="@string/sample_more_element_hide_actionbar"
             android:onClick="onClick"
             />
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_load_url"
+            android:text="@string/sample_load_url"
+            android:onClick="onClick"
+            />
 </LinearLayout>
