@@ -63,7 +63,7 @@ kcvideoview-samples 为演示例子
 <dependency>
   <groupId>com.github.destinyd</groupId>
   <artifactId>kcvideoview</artifactId>
-  <version>0.2.1</version>
+  <version>0.2.2-SNAPSHOT</version>
   <type>apklib</type>
 </dependency>
 ```
