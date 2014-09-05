@@ -75,11 +75,20 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     };
 
     public KCVideoView(Context context) {
-        super(context, null);
+        this(context, null);
     }
 
     public KCVideoView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context);
+    }
+
+    public KCVideoView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context);
+    }
+
+    private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.kc_videoview, this, true);
 
         resetDateLastClick();
