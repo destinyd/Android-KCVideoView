@@ -666,5 +666,13 @@ public class KCVideoView extends RelativeLayout implements MediaPlayer.OnComplet
     public void seekTo(int msec){
         kc_vv.seekTo(msec);
     }
+
+    public int get_seconds() {
+        return kc_vv.getSecondsCount();
+    }
+
+    public void set_seconds(int seconds) {
+        kc_vv.setSecondsCount(seconds);
+    }
 }
 

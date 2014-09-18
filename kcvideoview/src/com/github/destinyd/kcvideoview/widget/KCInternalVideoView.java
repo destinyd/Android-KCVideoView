@@ -131,8 +131,6 @@ public class KCInternalVideoView extends VideoView implements MediaPlayer.OnPrep
         setPosition(1, 0);
     }
 
-    ;
-
     void init() {
         mSecondsCount = 0;
         mSize = 0;
@@ -246,5 +244,13 @@ public class KCInternalVideoView extends VideoView implements MediaPlayer.OnPrep
             getHolder().setFixedSize(mVideoWidth, mVideoHeight);
             requestLayout();
         }
+    }
+
+    public int getSecondsCount() {
+        return mSecondsCount;
+    }
+
+    public void setSecondsCount(int seconds) {
+        this.mSecondsCount = seconds;
     }
 }
